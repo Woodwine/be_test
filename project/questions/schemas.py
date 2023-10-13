@@ -5,9 +5,20 @@ from pydantic import BaseModel
 
 
 class QuestionCreate(BaseModel):
+    """
+    Represents a created object of QuizQuestion.
+    """
+
     id: int
     question_id: int
     question: str
     answer: str
-    creation_date: datetime
+    created_at: datetime
 
+
+class QuestionResponse(BaseModel):
+    """
+    Represents a response object.
+    """
+
+    question: Optional[QuestionCreate] = None
