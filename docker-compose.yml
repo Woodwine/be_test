@@ -33,7 +33,7 @@ services:
       - DB_PORT=5432
     restart: always
     ports:
-      - 8080:8000
+      - 8000:8000
     depends_on:
       db:
         condition: service_healthy
