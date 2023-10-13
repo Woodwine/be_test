@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14.9
+    container_name: db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=test
+      - POSTGRES_USER=test_user
+    restart: always
+    volumes:
+      - db_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d test -U test_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  python-container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-app
+    command: ["scripts/app.sh"]
+    environment:
+      - DB_NAME=test
+      - DB_USER=test_user
+      - DB_PASS=test
+      - DB_HOST=db
+      - DB_PORT=5432
+    restart: always
+    ports:
+      - 8080:8000
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
